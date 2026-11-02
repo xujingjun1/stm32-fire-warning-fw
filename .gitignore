@@ -1,0 +1,30 @@
+# Keil MDK
+Objects/
+Listings/
+DebugConfig/
+*.uvguix.*
+*.bak
+*.dep
+*.scvd
+*.lnp
+*.d
+*.crf
+*.axf
+*.map
+*.htm
+*.build_log.htm
+EventRecorderStub.scvd
+
+# Python
+__pycache__/
+*.pyc
+
+# Build outputs
+test_frame_logic
+test_frame_logic.exe
+stdin_parse
+stdin_parse.exe
+
+# IDE
+.vscode/
+.idea/
