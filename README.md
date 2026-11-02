@@ -1,7 +1,7 @@
 # stm32-fire-warning-fw
 
 > 毕业设计《基于STM32与多模态感知的视觉火灾预警系统设计》的 STM32 端固件仓库。
-> 基于 STM32F103C8T6 + FreeRTOS，负责多路传感器采集、与 RK3568 视觉模块的串口通信、
+> 基于 STM32F103C8T6 + FreeRTOS，负责多路传感器采集、与 K210 视觉模块的串口通信、
 > 多模态融合决策、联动执行与云端上报。
 
 **状态：开发中** ｜ MCU：STM32F103C8T6 ｜ 规划 RTOS：FreeRTOS ｜ 协议层：✅ 已完成并通过单元测试
@@ -21,8 +21,8 @@
 
 ```
 ┌──────────────────┐        UART 115200         ┌──────────────────┐
-│  RK3568 (Linux)  │  AA55|N|cls|conf|chk|55AA  │   STM32F103C8T6  │
-│  YOLO → RKNN NPU │  ────────────────────────▶  │   + FreeRTOS     │
+│    K210 (KPU)    │  AA55|N|cls|conf|chk|55AA  │   STM32F103C8T6  │
+│ YOLO→nncase→KPU  │  ────────────────────────▶  │   + FreeRTOS     │
 │  视觉火焰 / 烟雾 │        (DMA + IDLE 收帧)     │   融合决策 + 控制 │
 └──────────────────┘                             └────────┬─────────┘
                                                           │
@@ -36,8 +36,8 @@
                                      蜂鸣器 + LED    继电器(断电/排风)   OLED 显示
 ```
 
-采用**两级异构**架构：RK3568 跑视觉推理（非实时），STM32 做实时采集与融合决策。
-理由：STM32F103（72 MHz、20 KB RAM、无 FPU/NPU）跑不动神经网络；而报警联动要求毫秒级确定性响应，Linux 不适合硬实时。
+采用**两级异构**架构：K210 跑视觉推理（KPU 加速，非实时要求），STM32 做实时采集与融合决策。
+理由：STM32F103（72 MHz、20 KB RAM、无 FPU/NPU）跑不动神经网络；K210 的 KPU 专攻卷积推理（nncase 工具链），而报警联动要求毫秒级确定性响应，由 STM32 承担。
 
 ---
 
@@ -51,7 +51,7 @@ stm32-fire-warning-fw/
 ├── tests/
 │   └── test_frame_logic.c  PC 端单元测试（7 组场景 / 16 个断言）
 ├── tools/
-│   ├── fake_vision_sender.py  模拟 RK3568 端发帧（Python，跨语言交叉验证）
+│   ├── fake_vision_sender.py  模拟 K210 端发帧（Python，跨语言交叉验证）
 │   └── stdin_parse.c          从 stdin 读十六进制喂给 C 解析器
 ├── docs/
 │   └── PROTOCOL.md         协议规范
@@ -62,7 +62,7 @@ stm32-fire-warning-fw/
 
 ---
 
-## 三、UART 帧协议（RK3568 → STM32）
+## 三、UART 帧协议（K210 → STM32）
 
 | 字段 | 字节 | 说明 |
 |---|---|---|
@@ -159,7 +159,7 @@ python -c "import sys; sys.path.insert(0,'tools'); import fake_vision_sender as 
 | ESP-01S (ESP8266) | UART | MQTT 上云 | 另占一路串口 |
 | OLED 0.96" | I2C/SPI | 本地显示 | — |
 | 继电器 + 蜂鸣器 + LED | GPIO | 联动执行 | — |
-| RK3568 | UART | 视觉推理结果 | 必须与 STM32 **共地** |
+| K210 | UART | 视觉推理结果 | 必须与 STM32 **共地** |
 
 ---
 

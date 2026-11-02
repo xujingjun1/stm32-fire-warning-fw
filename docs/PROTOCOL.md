@@ -1,4 +1,4 @@
-# UART 帧协议规范（RK3568 → STM32）
+# UART 帧协议规范（K210 视觉端 → STM32）
 
 版本：v1 ｜ 波特率 115200，8N1 ｜ 实现：`protocol/frame_parser.c`（逐字节状态机）
 

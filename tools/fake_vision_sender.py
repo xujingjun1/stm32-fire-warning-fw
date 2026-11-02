@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-fake_vision_sender.py —— PC 端"假装自己是 RK3568"
+fake_vision_sender.py —— PC 端"假装自己是 K210"
 
-作用：在你还没有板子、模型还没训练完、RKNN 还没量化通过的时候，
+作用：在你还没有板子、模型还没训练完、nncase 还没量化通过的时候，
       用这个脚本按协议定时往 STM32 发视觉结果帧，把主控侧的
       解析 / 融合 / 联动 / 上云 / 显示全部先调通。
       这是把最难的视觉部署从关键路径上摘下来的关键一步。
@@ -80,7 +80,7 @@ def to_hex(frame):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="模拟 RK3568 视觉模块向 STM32 发帧")
+    ap = argparse.ArgumentParser(description="模拟 K210 视觉模块向 STM32 发帧")
     ap.add_argument("--port", default="COM3", help="串口号，如 COM3 或 /dev/ttyUSB0")
     ap.add_argument("--baud", type=int, default=115200)
     ap.add_argument("--period", type=float, default=1.0, help="发送周期（秒）")
