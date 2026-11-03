@@ -1,6 +1,6 @@
 # stm32-fire-warning-fw
 
-> 毕业设计《基于STM32与多模态感知的视觉火灾预警系统设计》的 STM32 端固件仓库。
+> 基于 STM32 与多模态感知的视觉火灾预警系统的 STM32 端固件仓库。
 > 基于 STM32F103C8T6 + FreeRTOS，负责多路传感器采集、与 K210 视觉模块的串口通信、
 > 多模态融合决策、联动执行与云端上报。
 
@@ -173,4 +173,4 @@ python -c "import sys; sys.path.insert(0,'tools'); import fake_vision_sender as 
 
 ## License
 
-仅供学习与毕业设计展示使用。
+仅供学习与展示使用。
